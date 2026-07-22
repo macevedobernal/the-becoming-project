@@ -74,6 +74,6 @@ Users should consistently feel in control without effort — composed, not sooth
 In 5-10 years, this is the layer a person checks before anything else, because it has already synthesized what matters across work, health, money, relationships, and growth into one trustworthy read. Differentiation from every other "life OS" or habit tracker: those require the user to organize themselves; this does the noticing and organizing, and only asks the user for what only the user can know — whether something still matters to them.
 
 ## Current Build Status
-- One working screen exists (consistency-mode placeholder).
-- Foundation (data model, logging UI, interpretation logic) is being built next, per this blueprint.
-- Disruption and drift screens, Calendar/Health integration, and the finalized visual design language come after the foundation is real and working.
+- Foundation is built and working: habit data model (name, domain, per-day log), seed data across all three domains, a functional logging UI (tap-to-toggle checkboxes), and the drift/consistency interpretation logic described under Intelligence Model. State is pooled across domains, not siloed, and defaults to consistency when there isn't yet enough history to judge.
+- The single home screen reflects this real computed state (consistency / internal drift, plus a manual disruption flag) instead of placeholder text. Storage is local to the device only.
+- Not yet built: the learned foundational-domain weighting and baseline recalibration described under Intelligence Model (currently starts neutral and stays neutral — no per-user learning yet), dedicated disruption/drift screens, Calendar/Health integration, Proactive Inspiration, push delivery, and the finalized visual design language (current UI is functional, not styled to the brand direction above).
