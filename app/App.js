@@ -3,7 +3,6 @@ import { StatusBar } from 'expo-status-bar';
 import {
   ActivityIndicator,
   StyleSheet,
-  Switch,
   Text,
   TouchableOpacity,
   View,
@@ -14,6 +13,7 @@ import { formatDateKey } from './src/dates';
 import { createSeedData } from './src/seedData';
 import { loadData, saveData } from './src/storage';
 import { computeState, STATES } from './src/state';
+import { STATE_THEME, tint } from './src/theme';
 
 const OBSERVATIONS = {
   [STATES.CONSISTENCY]: 'Work, health, and habits have held steady this week.',
@@ -50,14 +50,14 @@ export default function App() {
     [todayKey]
   );
 
-  const toggleDisruption = useCallback((value) => {
-    setData((prev) => ({ ...prev, manualDisruption: value }));
+  const toggleDisruption = useCallback(() => {
+    setData((prev) => ({ ...prev, manualDisruption: !prev.manualDisruption }));
   }, []);
 
   if (!data) {
     return (
-      <View style={styles.container}>
-        <ActivityIndicator color="#e5e5e7" />
+      <View style={[styles.container, { backgroundColor: STATE_THEME[STATES.CONSISTENCY].background }]}>
+        <ActivityIndicator color={STATE_THEME[STATES.CONSISTENCY].ink} />
       </View>
     );
   }
@@ -69,11 +69,15 @@ export default function App() {
     today: todayDate,
   });
 
+  const theme = STATE_THEME[state];
   const todayLog = data.logs[todayKey] ?? {};
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.observation}>{OBSERVATIONS[state]}</Text>
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
+      <View style={styles.header}>
+        <Text style={[styles.kicker, { color: theme.ink }]}>{theme.label.toUpperCase()}</Text>
+        <Text style={[styles.observation, { color: theme.ink }]}>{OBSERVATIONS[state]}</Text>
+      </View>
 
       <View style={styles.list}>
         {data.habits.map((habit) => {
@@ -81,25 +85,48 @@ export default function App() {
           return (
             <TouchableOpacity
               key={habit.id}
-              style={styles.row}
+              style={[styles.row, { backgroundColor: tint(theme.ink, 0.08) }]}
               onPress={() => toggleHabit(habit.id)}
+              activeOpacity={0.7}
             >
-              <Text style={styles.checkbox}>{done ? '[x]' : '[ ]'}</Text>
+              <View
+                style={[
+                  styles.checkbox,
+                  { borderColor: theme.ink },
+                  done && { backgroundColor: theme.ink },
+                ]}
+              />
               <View style={styles.rowText}>
-                <Text style={styles.habitName}>{habit.name}</Text>
-                <Text style={styles.habitDomain}>{DOMAIN_LABELS[habit.domain]}</Text>
+                <Text style={[styles.habitName, { color: theme.ink }]}>{habit.name}</Text>
+                <Text style={[styles.habitDomain, { color: tint(theme.ink, 0.6) }]}>
+                  {DOMAIN_LABELS[habit.domain]}
+                </Text>
               </View>
             </TouchableOpacity>
           );
         })}
       </View>
 
-      <View style={styles.disruptionRow}>
-        <Text style={styles.disruptionLabel}>Life's disrupted right now</Text>
-        <Switch value={data.manualDisruption} onValueChange={toggleDisruption} />
-      </View>
+      <TouchableOpacity
+        style={[styles.disruptionRow, { backgroundColor: tint(theme.ink, 0.08) }]}
+        onPress={toggleDisruption}
+        activeOpacity={0.7}
+      >
+        <Text style={[styles.disruptionLabel, { color: theme.ink }]}>Life's disrupted right now</Text>
+        <View
+          style={[
+            styles.togglePill,
+            { borderColor: theme.ink },
+            data.manualDisruption && { backgroundColor: theme.ink },
+          ]}
+        >
+          <Text style={[styles.toggleText, { color: data.manualDisruption ? theme.background : theme.ink }]}>
+            {data.manualDisruption ? 'On' : 'Off'}
+          </Text>
+        </View>
+      </TouchableOpacity>
 
-      <StatusBar style="light" />
+      <StatusBar style={theme.statusBarStyle} />
     </View>
   );
 }
@@ -107,52 +134,75 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1c1c1e',
     justifyContent: 'center',
-    paddingHorizontal: 24,
+    paddingHorizontal: 20,
+  },
+  header: {
+    marginBottom: 32,
+  },
+  kicker: {
+    fontSize: 13,
+    fontWeight: '700',
+    letterSpacing: 1.5,
+    marginBottom: 12,
   },
   observation: {
-    color: '#e5e5e7',
-    fontSize: 20,
-    textAlign: 'center',
-    lineHeight: 28,
-    marginBottom: 40,
+    fontSize: 26,
+    fontWeight: '700',
+    lineHeight: 33,
   },
   list: {
-    marginBottom: 40,
+    marginBottom: 24,
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 10,
+    borderRadius: 16,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    marginBottom: 10,
   },
   checkbox: {
-    color: '#e5e5e7',
-    fontSize: 18,
-    width: 32,
+    width: 22,
+    height: 22,
+    borderRadius: 6,
+    borderWidth: 2,
+    marginRight: 14,
   },
   rowText: {
     flex: 1,
   },
   habitName: {
-    color: '#e5e5e7',
     fontSize: 16,
+    fontWeight: '600',
   },
   habitDomain: {
-    color: '#8e8e93',
-    fontSize: 13,
+    fontSize: 12,
+    fontWeight: '600',
+    letterSpacing: 0.5,
     marginTop: 2,
+    textTransform: 'uppercase',
   },
   disruptionRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: '#3a3a3c',
-    paddingTop: 16,
+    borderRadius: 16,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
   },
   disruptionLabel: {
-    color: '#8e8e93',
     fontSize: 14,
+    fontWeight: '600',
+  },
+  togglePill: {
+    borderWidth: 2,
+    borderRadius: 8,
+    paddingVertical: 4,
+    paddingHorizontal: 12,
+  },
+  toggleText: {
+    fontSize: 12,
+    fontWeight: '700',
   },
 });
