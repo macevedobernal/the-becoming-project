@@ -1,88 +1,79 @@
-# The Becoming Project — Product Philosophy
+# The Becoming Project — Product Blueprint
 
-This file is the persistent memory of *why* this app exists and *how* it should behave.
-Read it before writing or reviewing any code. When a feature decision is ambiguous,
-resolve it by asking "does this match the philosophy below?" rather than by default
-mobile-app-design instincts (streaks, notifications, gamification, etc.), which are
-explicitly rejected here.
+## Essence
+The Becoming Project is an adaptive life operating system that reads a person's behavior across connected life domains and acts as a steward of their long-term direction. It protects direction, not a fixed destination. It exists because most tools in this space optimize for engagement or task completion, not for distinguishing when someone is genuinely losing their own motivation versus when their life circumstances have actually changed, and responding differently to each.
 
-## What this app is
+## Core Philosophy
+- Direction over destination: becoming is protected motion, never a fixed target self.
+- Fidelity over engagement: every decision serves the user's own evolving intent, never platform engagement or retention.
+- Context before judgment: nothing is flagged as a failure before determining whether it's internal drift or external volatility.
 
-The Becoming Project is an **adaptive life operating system**. It exists to help the
-user become who they want to be, over years, not to help them complete tasks this week.
+## Non-Negotiables
 
-It is not:
-- A coach (it does not cheerlead or push)
-- A judge (it does not evaluate or score the user's worth or effort)
-- A habit tracker (it is not built around streaks or completion counts)
-- A productivity app (it is not optimizing for output or throughput)
+Product:
+- Cross-domain by design. Work, health, and habits are read as connected, never scored in isolation.
+- No feature ships without tracing back to the core philosophy.
 
-It is a **steward of the user's long-term direction** — something that holds the
-user's stated intentions in trust and helps them stay oriented toward those
-intentions over time, especially across the periods when the user's own attention
-drifts away from them.
+AI:
+- Never uses guilt, urgency, or streak-loss mechanics.
+- Self-report always overrides inference.
+- Initiates rather than waits, at a frequency that respects Adaptive Presence (see below).
 
-## Core behavioral principles
+UX:
+- Push-primary. The user never has to go looking for the app's read on their life.
+- Consistency weeks are quiet. Disruption weeks are the only time the system takes up more space.
 
-### 1. Never motivate through guilt, streaks, or urgency
-No red badges, no "you're about to lose your streak," no guilt-tripping copy, no
-countdown pressure, no comparison to past performance framed as failure. If a
-mechanic's primary function is to create anxiety to drive action, it does not
-belong in this app — full stop. Motivation here comes from clarity and relevance,
-not fear of loss.
+Ethical:
+- No behavioral data monetized for anything beyond the user's own growth.
+- Never quietly lowers the user's own bar to make progress look better.
 
-### 2. Distinguish internal drift from external volatility — and respond differently
-These are treated as fundamentally different states, not the same "off track" bucket:
+## Adaptive Presence
+System involvement scales with the user's momentum, not a fixed personality:
+- Consistency: nearly invisible. One composed observation, occasionally one Proactive Inspiration idea. Never a dashboard to interpret.
+- Internal drift (motivation stalls, distraction, no external cause): one sharp, specific observation reconnecting the user to their own stated intent. Not a plan overhaul.
+- External volatility (real circumstances changed — moved, family disruption, routine collapsed): system reorganizes the plan and explicitly, unapologetically lowers the bar for what counts as "on track," stated plainly, never as failure.
 
-- **Internal drift**: the user's motivation, focus, or follow-through has quietly
-  waned while their life circumstances are basically stable. The right response is
-  gentle re-orientation — surfacing the user's own stated intentions back to them,
-  without pressure, so they can decide whether to recommit.
-- **External volatility**: something real has changed — a move, a family change, a
-  health event, a job change, a crisis. The right response is *not* to hold the
-  user to their old plan. It's to help them adapt the plan itself, with more
-  presence and support than usual, because the ground has shifted under them.
+## Intelligence Model
+- Reads signal across domains as one connected picture, never siloed scores.
+- Starts neutral: no assumed foundational domain.
+- Once sufficient history exists, learns which domain empirically drags the others down for this specific person, and weights accordingly.
+- Baseline recalibrates automatically, but only after sustained signal over a real time window (never a short dip), and the shift is always named explicitly to the user, never silent.
+- Self-report always outranks inference at every step.
 
-The app should never treat a house move the way it treats a lazy week. Detecting
-which situation is occurring (as best it can) should shape tone, frequency, and
-the type of intervention offered.
+## Product Layers
+1. Data Layer: raw log of habits/actions, their domain (work/health/habits), and whether they happened, when.
+2. Interpretation Layer: the Intelligence Model. Determines state (consistency/drift/disruption), tracks the learned foundational domain, manages recalibration.
+3. Voice Layer: turns Interpretation output into an actual message, in the brand voice (below), respecting Adaptive Presence.
+4. Inspiration Layer: powers Proactive Inspiration — external ideas filtered by relevance to the user's own goals first, popularity second. Reads Data Layer for context but does not feed into state detection.
+5. Delivery Layer: the push mechanism. Decides when a message reaches the user. Push-primary by default.
 
-### 3. Involvement is adaptive to momentum
-The app's presence is inversely related to how well the user is already doing on
-their own:
-- During consistent, self-directed periods: the app should be **nearly invisible**.
-  Minimal check-ins, minimal prompts. Trust the user's own momentum and stay out
-  of the way.
-- During disruption, drift, or volatility: the app becomes **more proactive** —
-  more present, more willing to surface things unprompted, more willing to initiate.
+Keep these layers separate. Interpretation can get smarter without touching Voice. Voice can be refined without touching logic. Inspiration must never bleed into state detection.
 
-This adaptive dial is a core mechanic, not an incidental setting. Features should
-be designed with "how does this scale up and down with the user's current
-momentum?" in mind from the start.
+## Ecosystem
+Near-term core (build first): Google Calendar (signals external volatility directly — a suddenly packed or empty calendar) and Apple Health (signals drift early via sleep/activity, requires a custom Expo development build, not Expo Go, due to HealthKit access).
+Near-term, after core: richer onboarding that captures the user's actual routine and interests; Spotify as a lightweight mood signal.
+Long-term only (do not build yet): personal finance, friend/social coordination, beauty/wellness trend content. These are real and intentional future layers, not omissions, but depend on a proven core first.
 
-### 4. Proactive surfacing, not passive waiting
-The app should not simply sit and wait to be queried. It should notice relevant
-ideas, opportunities, patterns, or connections and bring them to the user's
-attention on its own initiative — the way a trusted chief of staff would, not the
-way a search bar would. This is in tension with principle #3 (adaptivity) —
-resolve that tension by adapting *frequency and intensity* of proactive surfacing,
-not by turning proactivity off entirely.
+## Brand & Voice
+Name: The Becoming Project.
+Feeling on open: sharp and composed — "it girl calm." Put together, not performing effort. Never earnest or motivational-poster in tone.
+Voice: says less rather than more, states rather than cheers, unbothered by lapses, confident proposals over tentative suggestions, restraint over exclamation.
 
-### 5. Voice: sharp and composed
-The tone is calm confidence — precise, economical, direct. Never:
-- Cheerful or upbeat ("You've got this! 💪")
-- Motivational-poster language ("Every journey begins with a single step")
-- Performatively warm or effusive
-- Apologetic or hedging
+## Visual Design Language
+- Flat, confident color-blocked cards over gradients or soft shadows. Reference: bold flat-color card UI (budgeting-app style), not soft/pastel/illustrated styles.
+- Sans-serif type carrying most weight.
+- Palette: punchy but grounded, not neon, not pastel. Reference tones: a yellow-green (wasabi), a pale cool blue, a deep burgundy (cassis), a muted sage green, a warm orange-red (orange topaze).
+- Likely one dominant color per state (consistency/drift/disruption) rather than one uniform palette, so color itself communicates state.
+- Minimal iconography, restraint over illustration.
+- Interaction unit is a card to glance at, not a screen to scroll. Tapping in for detail is optional, never required to get the point.
 
-Think: a sharp, trusted advisor who respects the user enough not to perform
-enthusiasm at them. Calm, clear, a little dry if anything. Confidence comes from
-precision, not volume.
+## Experience Vision
+Users should consistently feel in control without effort — composed, not soothed or hyped. Nothing in the product should feel like it's trying to convince the user of anything.
 
-## How to use this when building
+## Long-Term Vision
+In 5-10 years, this is the layer a person checks before anything else, because it has already synthesized what matters across work, health, money, relationships, and growth into one trustworthy read. Differentiation from every other "life OS" or habit tracker: those require the user to organize themselves; this does the noticing and organizing, and only asks the user for what only the user can know — whether something still matters to them.
 
-When implementing any feature — notifications, check-ins, onboarding, streak-like
-mechanics, progress displays, copy/microcopy, AI-generated messages — check it
-against all five principles above before writing code. If a feature only makes
-sense assuming guilt, urgency, or constant visibility as the motivator, it's the
-wrong feature, not just the wrong copy.
+## Current Build Status
+- One working screen exists (consistency-mode placeholder).
+- Foundation (data model, logging UI, interpretation logic) is being built next, per this blueprint.
+- Disruption and drift screens, Calendar/Health integration, and the finalized visual design language come after the foundation is real and working.
