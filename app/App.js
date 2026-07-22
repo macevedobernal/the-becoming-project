@@ -28,8 +28,14 @@ export default function App() {
       ([storedData, complete, storedProfile]) => {
         if (storedData) setData(storedData);
         setProfile(storedProfile ?? {});
-        setOnboardingComplete(complete);
-        if (complete) setScreen('planner');
+        // A flag from a build before name-capture existed would otherwise
+        // skip straight past the new onboarding screens with no name ever
+        // set. Require an actual saved name before treating onboarding as
+        // done, so anyone in that state gets routed through it for real.
+        const hasName = !!storedProfile?.name?.trim();
+        const fullyOnboarded = complete && hasName;
+        setOnboardingComplete(fullyOnboarded);
+        if (fullyOnboarded) setScreen('planner');
       }
     );
   }, []);

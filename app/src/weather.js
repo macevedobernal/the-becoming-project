@@ -33,10 +33,12 @@ function describeWeatherCode(code) {
 export async function fetchBogotaWeather() {
   const url =
     `https://api.open-meteo.com/v1/forecast?latitude=${BOGOTA_LATITUDE}&longitude=${BOGOTA_LONGITUDE}` +
-    `&current=temperature_2m,weather_code&timezone=America%2FBogota`;
+    `&current=temperature_2m,weather_code&timezone=auto`;
 
   const response = await fetch(url);
-  if (!response.ok) throw new Error('Weather request failed');
+  if (!response.ok) {
+    throw new Error(`Weather request failed: ${response.status} ${response.statusText}`);
+  }
 
   const json = await response.json();
   const temperature = json?.current?.temperature_2m;

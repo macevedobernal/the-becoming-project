@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useCallback, useEffect, useState } from 'react';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 
 import NeoCard from '../components/NeoCard';
@@ -31,20 +31,27 @@ export default function DailyPlannerScreen({
   onToggleDisruption,
 }) {
   const [weather, setWeather] = useState({ status: 'loading' });
+  const [retryToken, setRetryToken] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
+    setWeather({ status: 'loading' });
     fetchBogotaWeather()
       .then((result) => {
         if (!cancelled) setWeather({ status: 'ready', ...result });
       })
-      .catch(() => {
+      .catch((error) => {
+        // Logged (not swallowed) so a real failure shows up in the
+        // `npx expo start` terminal instead of just a generic UI message.
+        console.warn('Bogota weather fetch failed:', error?.message ?? error);
         if (!cancelled) setWeather({ status: 'error' });
       });
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [retryToken]);
+
+  const retryWeather = useCallback(() => setRetryToken((n) => n + 1), []);
 
   const state = computeState({
     habits: data.habits,
@@ -61,7 +68,7 @@ export default function DailyPlannerScreen({
     weather.status === 'ready'
       ? `${weather.temperatureC}°C in Bogotá, ${weather.description.toLowerCase()}.`
       : weather.status === 'error'
-      ? 'Weather unavailable right now.'
+      ? 'Weather unavailable right now. Tap to retry.'
       : 'Checking the weather in Bogotá…';
 
   const handleToggleHabit = (habitId) => {
@@ -87,7 +94,13 @@ export default function DailyPlannerScreen({
             {greeting}
             {name ? `, ${name}` : ''}.
           </Text>
-          <Text style={[styles.heroWeather, { color: HERO_THEME.text }]}>{weatherLine}</Text>
+          <TouchableOpacity
+            disabled={weather.status !== 'error'}
+            onPress={retryWeather}
+            activeOpacity={0.7}
+          >
+            <Text style={[styles.heroWeather, { color: HERO_THEME.text }]}>{weatherLine}</Text>
+          </TouchableOpacity>
         </NeoCard>
 
         <NeoCard backgroundColor={theme.background} style={styles.stateCard}>
