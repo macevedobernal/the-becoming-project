@@ -1,9 +1,10 @@
 import { STATES } from './state';
 import { DOMAINS } from './domains';
 
-// The five palette colors from CLAUDE.md. Not all five map to a state —
-// sage and orange topaze are held in reserve for later (domain accents,
-// Proactive Inspiration, etc.) rather than forced in here.
+// The five palette colors from CLAUDE.md. Spread across screens/elements
+// rather than repeating one or two everywhere: wasabi and pale blue carry
+// state color, cassis anchors the onboarding open, orange topaze headlines
+// the Daily Planner hero, sage rounds out the domain accents.
 export const PALETTE = {
   wasabi: '#E9F056',
   paleBlue: '#D7EFFF',
@@ -11,6 +12,19 @@ export const PALETTE = {
   sage: '#AEB8A0',
   orangeTopaze: '#FF5C34',
 };
+
+export const BLACK = '#000000';
+
+// Neutral canvas the card-feed sits on. Not one of the five brand colors —
+// it's negative space, the same role white plays in flat card UI, so the
+// palette colors keep reading as deliberate accents rather than wallpaper.
+export const NEUTRAL_CANVAS = '#F7F4EC';
+export const NEUTRAL_CARD = '#FFFFFF';
+
+// Neobrutalist primitives: every card/button gets the same thick border
+// and hard-edged offset shadow, no blur.
+export const BORDER_WIDTH = 3;
+export const SHADOW_OFFSET = 6;
 
 // One dominant color per state, per CLAUDE.md's Visual Design Language.
 // Consistency and drift share cassis as ink-on-light; disruption inverts
@@ -37,18 +51,22 @@ export const STATE_THEME = {
   },
 };
 
-// Domain accents are separate from state color, so a habit's domain stays
-// identifiable regardless of which state currently owns the screen.
-// Work and health get colors no state ever uses as a background (orange
-// topaze, sage), so they never disappear. Habits reuses cassis — the one
-// unavoidable overlap given a 5-color palette and 3 states already claiming
-// 3 of them — mitigated by always drawing the dot with an ink-colored ring,
-// so it reads as an outline even on a disruption-state screen where the
-// background is cassis too.
-export const DOMAIN_COLORS = {
-  [DOMAINS.WORK]: PALETTE.orangeTopaze,
-  [DOMAINS.HEALTH]: PALETTE.sage,
-  [DOMAINS.HABITS]: PALETTE.cassis,
+// Domain tags are solid color chips on a neutral card, not full-bleed
+// backgrounds — so unlike state color, every domain gets its own color
+// with no risk of blending into whatever's behind it. Text is dark by
+// default per the brief; cassis is dark itself, so habits gets a light
+// (pale blue) label instead so it stays legible.
+export const DOMAIN_THEME = {
+  [DOMAINS.WORK]: { color: PALETTE.orangeTopaze, text: BLACK },
+  [DOMAINS.HEALTH]: { color: PALETTE.sage, text: BLACK },
+  [DOMAINS.HABITS]: { color: PALETTE.cassis, text: PALETTE.paleBlue },
+};
+
+// The Daily Planner's hero banner is deliberately its own color, distinct
+// from whatever the state card below it is showing.
+export const HERO_THEME = {
+  background: PALETTE.orangeTopaze,
+  text: BLACK,
 };
 
 export function tint(hexColor, alpha) {
